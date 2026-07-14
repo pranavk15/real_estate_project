@@ -1,0 +1,345 @@
+{% extends 'bank/bank_base.html' %}
+
+{% block content %}
+
+<div class="welcome-card">
+    <div>
+        <h1 class="welcome-title">
+            Welcome, {{ bank.bankname }}
+        </h1>
+
+        <p class="welcome-text">
+            Monitor properties, offers and sales performance from your dashboard.
+        </p>
+    </div>
+
+    <a href="/bank/properties/{{ bank_id }}" class="dashboard-btn">
+        Manage Properties
+    </a>
+</div>
+
+<!-- Analytics Cards -->
+
+<div class="dashboard-grid">
+
+    <div class="analytics-card">
+        <div class="icon-box blue">
+            <i class="fa fa-building"></i>
+        </div>
+
+        <h4>Total Properties</h4>
+
+        <h1>{{ total_properties }}</h1>
+    </div>
+
+    <div class="analytics-card">
+        <div class="icon-box green">
+            <i class="fa fa-house-circle-check"></i>
+        </div>
+
+        <h4>Available</h4>
+
+        <h1>{{ available_properties }}</h1>
+    </div>
+
+    <div class="analytics-card">
+        <div class="icon-box red">
+            <i class="fa fa-handshake"></i>
+        </div>
+
+        <h4>Sold</h4>
+
+        <h1>{{ sold_properties }}</h1>
+    </div>
+
+    <div class="analytics-card">
+        <div class="icon-box yellow">
+            <i class="fa fa-gavel"></i>
+        </div>
+
+        <h4>Total Offers</h4>
+
+        <h1>{{ total_offers }}</h1>
+    </div>
+
+</div>
+
+<!-- Chart -->
+
+<div class="chart-container">
+
+    <h2 class="section-title">
+        Performance Overview
+    </h2>
+
+    <canvas id="bankChart"></canvas>
+
+</div>
+
+<!-- Recent Properties -->
+
+<div class="recent-section">
+
+    <div class="section-header">
+        <h2>Recent Properties</h2>
+
+        <a href="/bank/properties/{{ bank_id }}" class="view-all-btn">
+            View All
+        </a>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table dashboard-table">
+
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for property in properties[:5] %}
+
+                <tr>
+                    <td>{{ property.property_name }}</td>
+
+                    <td>{{ property.location }}</td>
+
+                    <td>₹ {{ "{:,}".format(property.minimum_price) }}</td>
+
+                    <td>
+
+                        {% if property.status == 'Sold' %}
+                            <span class="badge bg-success">
+                                Sold
+                            </span>
+                        {% else %}
+                            <span class="badge bg-primary">
+                                Available
+                            </span>
+                        {% endif %}
+
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<style>
+
+.welcome-card{
+    background:linear-gradient(135deg,#08152f,#0d6efd);
+    padding:35px;
+    border-radius:25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+    color:white;
+}
+
+.welcome-title{
+    font-size:42px;
+    font-weight:800;
+}
+
+.welcome-text{
+    opacity:.9;
+    margin-top:10px;
+}
+
+.dashboard-btn{
+    background:white;
+    color:#0d6efd;
+    padding:14px 28px;
+    border-radius:15px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    margin-bottom:35px;
+}
+
+.analytics-card{
+    background:#08152f;
+    padding:30px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    transition:.3s;
+}
+
+.analytics-card:hover{
+    transform:translateY(-8px);
+}
+
+.analytics-card h4{
+    color:#dfe6e9;
+    margin-top:15px;
+}
+
+.analytics-card h1{
+    color:white;
+    font-size:50px;
+    font-weight:800;
+}
+
+.icon-box{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    color:white;
+}
+
+.blue{
+    background:#0d6efd;
+}
+
+.green{
+    background:#00b894;
+}
+
+.red{
+    background:#e74c3c;
+}
+
+.yellow{
+    background:#f1c40f;
+    color:black;
+}
+
+.chart-container{
+    background:#08152f;
+    padding:30px;
+    border-radius:25px;
+    margin-bottom:35px;
+}
+
+.section-title{
+    color:white;
+    margin-bottom:25px;
+}
+
+.recent-section{
+    background:#08152f;
+    padding:30px;
+    border-radius:25px;
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.section-header h2{
+    color:white;
+}
+
+.view-all-btn{
+    background:#0d6efd;
+    color:white;
+    padding:10px 20px;
+    border-radius:12px;
+    text-decoration:none;
+}
+
+.dashboard-table{
+    color:white;
+}
+
+.dashboard-table th{
+    color:#0d6efd;
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+new Chart(document.getElementById('bankChart'), {
+
+    type:'bar',
+
+    data:{
+        labels:[
+            'Properties',
+            'Available',
+            'Sold',
+            'Offers'
+        ],
+
+        datasets:[{
+            label:'Bank Statistics',
+
+            data:[
+                {{ total_properties }},
+                {{ available_properties }},
+                {{ sold_properties }},
+                {{ total_offers }}
+            ],
+
+            backgroundColor:[
+                '#0d6efd',
+                '#00b894',
+                '#e74c3c',
+                '#f1c40f'
+            ],
+
+            borderRadius:15
+        }]
+    },
+
+    options:{
+        responsive:true,
+
+        plugins:{
+            legend:{
+                labels:{
+                    color:'white'
+                }
+            }
+        },
+
+        scales:{
+            x:{
+                ticks:{
+                    color:'white'
+                }
+            },
+
+            y:{
+                ticks:{
+                    color:'white'
+                }
+            }
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

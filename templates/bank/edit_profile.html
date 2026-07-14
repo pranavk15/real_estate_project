@@ -1,0 +1,95 @@
+{% extends 'bank/bank_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card p-4 bg-dark text-white">
+
+        <h2>Edit Bank Profile</h2>
+
+      <form action="/bank/update_profile/{{ bank[0] }}"
+      method="POST"
+      enctype="multipart/form-data">
+
+    <div class="mb-3">
+        <label class="form-label text-white fw-semibold">
+            Bank Name
+        </label>
+        <input type="text"
+               name="bankname"
+               value="{{ bank[1] }}"
+               class="form-control"
+               placeholder="Enter Bank Name"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-white fw-semibold">
+            Branch
+        </label>
+        <input type="text"
+               name="branch"
+               value="{{ bank[2] }}"
+               class="form-control"
+               placeholder="Enter Branch"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-white fw-semibold">
+            IFSC Code
+        </label>
+        <input type="text"
+               name="ifsc"
+               value="{{ bank[3] }}"
+               class="form-control"
+               placeholder="Enter IFSC Code"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-white fw-semibold">
+            Email Address
+        </label>
+        <input type="email"
+               name="email"
+               value="{{ bank[4] }}"
+               class="form-control"
+               placeholder="Enter Email"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-white fw-semibold">
+            Address
+        </label>
+        <textarea name="address"
+                  rows="3"
+                  class="form-control"
+                  placeholder="Enter Address"
+                  required>{{ bank[6] }}</textarea>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label text-white fw-semibold">
+            Bank Logo
+        </label>
+        <input type="file"
+               name="logo"
+               class="form-control">
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary w-100 py-2 fw-bold">
+        <i class="fa fa-floppy-disk me-2"></i>
+        Update Profile
+    </button>
+
+</form>
+
+    </div>
+
+</div>
+
+{% endblock %}

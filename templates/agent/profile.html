@@ -1,0 +1,312 @@
+{% extends 'agent/baseagent.html' %}
+
+{% block page_title %}
+My Profile
+{% endblock %}
+
+{% block page_subtitle %}
+
+Manage your personal and professional details
+
+{% endblock %}
+
+{% block styles %}
+
+<style>
+
+.profile-layout{
+display:grid;
+grid-template-columns:350px 1fr;
+gap:28px;
+}
+
+.profile-main{
+padding:28px;
+text-align:center;
+}
+
+.large-avatar{
+width:115px;
+height:115px;
+border-radius:18px;
+object-fit:cover;
+margin-bottom:20px;
+}
+
+.profile-name{
+font-size:24px;
+font-weight:700;
+}
+
+.profile-agency{
+color:#788296;
+}
+
+.profile-divider{
+border-top:1px solid #ddd;
+margin:25px 0;
+}
+
+.profile-information{
+text-align:left;
+}
+
+.profile-information p{
+margin-bottom:16px;
+}
+
+.profile-information i{
+width:28px;
+color:#748094;
+}
+
+.profile-content{
+display:flex;
+flex-direction:column;
+gap:23px;
+}
+
+.information-card{
+padding:28px;
+}
+
+.information-card h3{
+font-size:20px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+.summary-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+}
+
+.summary-item{
+background:#eeece8;
+padding:17px;
+border-radius:18px;
+}
+
+.summary-title{
+color:#758094;
+font-size:14px;
+}
+
+.summary-number{
+font-size:25px;
+font-weight:700;
+}
+
+@media(max-width:950px){
+
+.profile-layout{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:600px){
+
+.summary-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-layout">
+
+<div class="white-card profile-main">
+
+{% if agent.profile_image %}
+
+{% if agent.profile_image in
+['male.jpg','female.jpg','default-agent.jpg'] %}
+
+<img
+src="{{ url_for('static',
+filename='images/' ~ agent.profile_image) }}"
+class="large-avatar">
+
+{% else %}
+
+<img
+src="{{ url_for('static',
+filename='uploads/' ~ agent.profile_image) }}"
+class="large-avatar">
+
+{% endif %}
+
+{% endif %}
+
+<h2 class="profile-name">
+
+{{ agent.fullname }}
+
+</h2>
+
+<p class="profile-agency">
+
+{{ agent.agency }}
+
+</p>
+
+<div class="profile-divider"></div>
+
+<div class="profile-information">
+
+<p>
+
+<i class="fa-regular fa-envelope"></i>
+
+{{ agent.email }}
+
+</p>
+
+<p>
+
+<i class="fa fa-phone"></i>
+
+{{ agent.phone }}
+
+</p>
+
+<p>
+
+<i class="fa fa-location-dot"></i>
+
+{{ agent.address }}
+
+</p>
+
+</div>
+
+<a
+href="/agent/edit_profile/{{ agent.id }}"
+class="green-btn">
+
+<i class="fa fa-pen"></i>
+
+Edit Profile
+
+</a>
+
+</div>
+
+<div class="profile-content">
+
+<div class="white-card information-card">
+
+<h3>
+
+Performance Summary
+
+</h3>
+
+<div class="summary-grid">
+
+<div class="summary-item">
+
+<div class="summary-title">
+
+Available Properties
+
+</div>
+
+<div class="summary-number">
+
+{{ total_properties|default(0) }}
+
+</div>
+
+</div>
+
+<div class="summary-item">
+
+<div class="summary-title">
+
+My Offers
+
+</div>
+
+<div class="summary-number">
+
+{{ total_offers|default(0) }}
+
+</div>
+
+</div>
+
+<div class="summary-item">
+
+<div class="summary-title">
+
+Accepted Offers
+
+</div>
+
+<div class="summary-number">
+
+{{ accepted_offers|default(0) }}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="white-card information-card">
+
+<h3>
+
+Professional Information
+
+</h3>
+
+<p>
+
+<strong>Agency:</strong>
+
+{{ agent.agency }}
+
+</p>
+
+<p>
+
+<strong>Email:</strong>
+
+{{ agent.email }}
+
+</p>
+
+<p>
+
+<strong>Phone:</strong>
+
+{{ agent.phone }}
+
+</p>
+
+<p>
+
+<strong>Address:</strong>
+
+{{ agent.address }}
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

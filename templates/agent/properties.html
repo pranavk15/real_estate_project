@@ -1,0 +1,325 @@
+{% extends 'agent/baseagent.html' %}
+
+{% block page_title %}
+All Properties
+{% endblock %}
+
+{% block page_subtitle %}
+
+Browse the full property catalogue
+
+{% endblock %}
+
+{% block styles %}
+
+<style>
+
+.filter-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:23px;
+}
+
+.filter-buttons{
+display:flex;
+gap:10px;
+}
+
+.filter-btn{
+border:0;
+padding:10px 22px;
+border-radius:25px;
+font-weight:600;
+color:#657083;
+background:#ebe9e5;
+}
+
+.filter-btn.active{
+background:#10b981;
+color:white;
+}
+
+.property-count{
+color:#6d7788;
+}
+
+.property-table{
+background:white;
+border:1px solid #ddd;
+border-radius:20px;
+overflow:hidden;
+}
+
+.property-header,
+.property-row{
+display:grid;
+
+grid-template-columns:
+
+3fr
+1fr
+1.3fr
+1.2fr
+1.4fr;
+
+align-items:center;
+gap:20px;
+padding:17px 28px;
+}
+
+.property-header{
+font-size:14px;
+color:#687386;
+font-weight:600;
+background:#fafafa;
+}
+
+.property-row{
+border-top:1px solid #ddd;
+}
+
+.property-info{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.property-image{
+width:76px;
+height:53px;
+border-radius:12px;
+object-fit:cover;
+}
+
+.property-name{
+font-size:16px;
+font-weight:700;
+}
+
+.property-location{
+font-size:14px;
+color:#748094;
+}
+
+.property-price{
+font-weight:700;
+font-size:17px;
+}
+
+.offer-input{
+width:100%;
+padding:9px;
+border:1px solid #ddd;
+border-radius:9px;
+margin-bottom:7px;
+}
+
+.offer-btn{
+border:0;
+width:100%;
+padding:8px;
+border-radius:9px;
+background:#10b981;
+color:white;
+font-weight:600;
+}
+
+@media(max-width:900px){
+
+.property-header{
+display:none;
+}
+
+.property-row{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="filter-row">
+
+<div class="filter-buttons">
+
+<button class="filter-btn active">
+
+All
+
+</button>
+
+<button class="filter-btn">
+
+Available
+
+</button>
+
+</div>
+
+<div class="property-count">
+
+{{ properties|length }} properties
+
+</div>
+
+</div>
+
+<div class="property-table">
+
+<div class="property-header">
+
+<div>PROPERTY</div>
+
+<div>BANK</div>
+
+<div>LOCATION</div>
+
+<div>PRICE</div>
+
+<div>MAKE OFFER</div>
+
+</div>
+
+{% for property in properties %}
+
+<div class="property-row searchable-card">
+
+<div class="property-info">
+
+{% if property.image %}
+
+{% set images =
+property.image.split(',') %}
+
+<img
+src="{{ url_for('static',
+filename='uploads/' ~ images[0].strip()) }}"
+class="property-image">
+
+{% else %}
+
+<img
+src="{{ url_for('static',
+filename='images/noimage.jpg') }}"
+class="property-image">
+
+{% endif %}
+
+<div>
+
+<div class="property-name">
+
+{{ property.property_name }}
+
+</div>
+
+<div class="property-location">
+
+<i class="fa fa-location-dot"></i>
+
+{{ property.location }}
+
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+{{ property.bankname }}
+
+</div>
+
+<div>
+
+<a
+href="{{ property.map_link }}"
+target="_blank">
+
+{{ property.location }}
+
+</a>
+
+</div>
+
+<div class="property-price">
+
+₹{{ "{:,}".format(property.minimum_price) }}
+
+</div>
+
+<form
+action="/agent/offer_price/{{ property.id }}/{{ agent_id }}"
+method="POST">
+
+<input
+type="number"
+name="offer_price"
+class="offer-input"
+placeholder="Enter offer"
+required>
+
+<button class="offer-btn">
+
+Submit Offer
+
+</button>
+
+</form>
+
+</div>
+
+{% else %}
+
+<div style="padding:70px;text-align:center">
+
+<h3>No properties available</h3>
+
+</div>
+
+{% endfor %}
+
+</div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const searchInput =
+    document.querySelector(".global-search input");
+
+    const propertyRows =
+    document.querySelectorAll(".property-row");
+
+    if(searchInput){
+
+        searchInput.addEventListener("input", function(){
+
+            const searchValue =
+            this.value.toLowerCase().trim();
+
+            propertyRows.forEach(function(row){
+
+                const rowText =
+                row.textContent.toLowerCase();
+
+                row.style.display =
+                rowText.includes(searchValue)
+                ? "grid"
+                : "none";
+
+            });
+
+        });
+
+    }
+
+});
+
+</script>
+{% endblock %}

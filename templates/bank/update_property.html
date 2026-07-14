@@ -1,0 +1,211 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+
+<h1 class="page-title mb-5">
+Update Property
+</h1>
+
+<div class="container mt-5">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="custom-modal">
+
+<div class="modal-header border-0">
+
+<h3>Update Property</h3>
+
+<a href="javascript:history.back()"
+class="btn-close btn-close-white">
+</a>
+
+</div>
+
+<div class="modal-body">
+
+<form
+action="/bank/save_updated_property/{{ property.id }}"
+method="POST"
+enctype="multipart/form-data">
+
+<input
+type="text"
+name="property_name"
+class="form-control custom-input mb-3"
+placeholder="Property Name"
+value="{{ property.property_name }}"
+required>
+
+<input
+type="text"
+name="location"
+class="form-control custom-input mb-3"
+placeholder="Location"
+value="{{ property.location }}"
+required>
+
+
+<label class="form-label text-white">Google Maps Location</label>
+
+<input
+type="url"
+name="map_link"
+class="form-control custom-input mb-3"
+placeholder="https://maps.google.com/..."
+required>
+<input
+type="number"
+name="minimum_price"
+class="form-control custom-input mb-3"
+placeholder="Minimum Price"
+value="{{ property.minimum_price }}"
+required>
+
+<input
+type="file"
+id="images"
+name="images"
+multiple
+accept="image/*">
+
+<div id="selectedFiles"></div>
+
+<button
+type="submit"
+class="btn-save w-100 mt-4">
+
+Update Property
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const input=document.getElementById("images");
+
+const dt=new DataTransfer();
+
+input.addEventListener("change",function(){
+
+for(const file of this.files){
+
+if(dt.files.length>=4){
+
+alert("Maximum 4 images allowed.");
+
+break;
+
+}
+
+dt.items.add(file);
+
+}
+
+input.files=dt.files;
+
+let html="";
+
+for(let i=0;i<dt.files.length;i++){
+
+html+=`<p>📷 ${dt.files[i].name}</p>`;
+
+}
+
+document.getElementById("selectedFiles").innerHTML=html;
+
+});
+
+</script>
+<style>
+    .custom-modal{
+background:#081733;
+color:white;
+border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,.45);
+padding:10px;
+}
+
+.custom-input{
+background:#2d2d2d;
+border:1px solid #555;
+color:#fff;
+padding:15px;
+border-radius:12px;
+}
+
+.custom-input::placeholder{
+color:#fff;
+opacity:.8;
+}
+
+.custom-input:focus{
+background:#3a3a3a;
+border:1px solid #0d6efd;
+color:#fff;
+box-shadow:none;
+outline:none;
+}
+
+#images{
+width:100%;
+padding:12px;
+background:#2d2d2d;
+border:1px solid #555;
+border-radius:12px;
+color:white;
+margin-top:8px;
+}
+
+#selectedFiles{
+margin-top:15px;
+color:#dfe6e9;
+font-size:15px;
+}
+
+#selectedFiles p{
+margin:6px 0;
+padding:10px;
+background:#102247;
+border-radius:10px;
+}
+
+.btn-save{
+background:#0d6efd;
+border:none;
+padding:15px;
+border-radius:12px;
+font-weight:bold;
+font-size:18px;
+color:white;
+transition:.3s;
+}
+
+.btn-save:hover{
+background:#0056d2;
+transform:translateY(-2px);
+}
+
+.modal-header h3{
+font-size:34px;
+font-weight:700;
+}
+
+.btn-close{
+font-size:24px;
+}
+</style>
+{% endblock %}

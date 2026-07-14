@@ -1,0 +1,465 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block page_title %}Banks{% endblock %}
+
+{% block content %}
+
+
+<div class="bank-stats">
+
+
+<div class="bank-stat">
+
+<span>Partner Banks</span>
+
+<h2>{{ banks|length }}</h2>
+
+<p>Active partners</p>
+
+</div>
+
+
+<div class="bank-stat">
+
+<span>Bank Network</span>
+
+<h2>{{ banks|length }}</h2>
+
+<p>Connected institutions</p>
+
+</div>
+
+
+<div class="bank-stat">
+
+<span>Partnership</span>
+
+<h2>Active</h2>
+
+<p>Across all partners</p>
+
+</div>
+
+
+</div>
+
+
+
+<div class="bank-list">
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>INSTITUTION</th>
+
+<th>BRANCH</th>
+
+<th>IFSC CODE</th>
+
+<th>CONTACT</th>
+
+<th>STATUS</th>
+
+<th>ACTIONS</th>
+
+</tr>
+
+
+</thead>
+
+
+<tbody>
+
+
+{% for bank in banks %}
+
+
+<tr>
+
+
+<td>
+
+
+<div class="bank-data">
+
+
+<div class="bank-icon">
+
+<i class="fa-solid fa-building-columns"></i>
+
+</div>
+
+
+<div>
+
+
+<strong>
+
+{{ bank[1] }}
+
+</strong>
+
+
+<small>
+
+Bank ID:
+{{ bank[0] }}
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+</td>
+
+
+<td>
+
+{{ bank[2] }}
+
+</td>
+
+
+<td class="ifsc">
+
+{{ bank[3] }}
+
+</td>
+
+
+<td>
+
+{{ bank[4] }}
+
+</td>
+
+
+<td>
+
+<span class="bank-active">
+
+Active
+
+</span>
+
+</td>
+
+
+<td>
+
+
+<div class="bank-actions">
+
+
+<a href="/admin/view_bank/{{ bank[0] }}">
+
+<i class="fa-regular fa-eye"></i>
+
+</a>
+
+
+<a href="/admin/delete_bank/{{ bank[0] }}"
+
+onclick="return confirm(
+'Delete this bank?'
+)">
+
+<i class="fa-regular fa-trash-can"></i>
+
+</a>
+
+
+</div>
+
+
+</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+<style>
+
+
+.bank-stats{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+gap:20px;
+
+margin-bottom:25px;
+
+}
+
+
+.bank-stat{
+
+height:130px;
+
+padding:25px;
+
+background:white;
+
+border:
+
+1px solid #dededb;
+
+border-radius:19px;
+
+}
+
+
+.bank-stat span{
+
+color:#697286;
+
+font-size:14px;
+
+}
+
+
+.bank-stat h2{
+
+margin:
+
+5px 0 2px;
+
+font-size:37px;
+
+}
+
+
+.bank-stat p{
+
+margin:0;
+
+color:#7d8492;
+
+font-size:14px;
+
+}
+
+
+.bank-list{
+
+background:white;
+
+border:
+
+1px solid #dededb;
+
+border-radius:19px;
+
+overflow:hidden;
+
+}
+
+
+.bank-list table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+.bank-list th{
+
+padding:19px 23px;
+
+background:#fafaf8;
+
+color:#687286;
+
+font-size:14px;
+
+}
+
+
+.bank-list td{
+
+padding:22px 23px;
+
+border-top:
+
+1px solid #e4e4e1;
+
+color:#697286;
+
+}
+
+
+.bank-data{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+
+.bank-icon{
+
+width:43px;
+
+height:43px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#efeee9;
+
+color:#10182c;
+
+border-radius:50%;
+
+}
+
+
+.bank-data strong{
+
+display:block;
+
+color:#10182c;
+
+font-size:16px;
+
+}
+
+
+.bank-data small{
+
+display:block;
+
+margin-top:5px;
+
+}
+
+
+.ifsc{
+
+color:#10182c !important;
+
+font-weight:bold;
+
+}
+
+
+.bank-active{
+
+padding:7px 15px;
+
+background:#e5f8ef;
+
+color:#009b70;
+
+border-radius:20px;
+
+}
+
+
+.bank-actions{
+
+display:flex;
+
+gap:20px;
+
+}
+
+
+.bank-actions a{
+
+color:#737c8d;
+
+font-size:17px;
+
+}
+
+
+.bank-actions a:hover{
+
+color:#d1aa39;
+
+}
+
+
+@media(max-width:800px){
+
+.bank-stats{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+<script>
+
+const searchInput =
+document.querySelector(".search-box input");
+
+const bankRows =
+document.querySelectorAll(".bank-list tbody tr");
+
+searchInput.addEventListener("keyup", function(){
+
+    const searchValue =
+    this.value.toLowerCase().trim();
+
+    bankRows.forEach(function(row){
+
+        const rowText =
+        row.innerText.toLowerCase();
+
+        if(rowText.includes(searchValue)){
+
+            row.style.display = "";
+
+        }
+        else{
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,1627 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block page_title %}Properties{% endblock %}
+
+{% block content %}
+
+
+<!-- FILTER BUTTONS -->
+
+<div class="content-heading">
+
+    <div class="property-filters">
+
+        <button
+        class="filter-btn active"
+        data-filter="all">
+
+            All
+
+        </button>
+
+
+        <button
+        class="filter-btn"
+        data-filter="available">
+
+            Available
+
+        </button>
+
+
+        <button
+        class="filter-btn"
+        data-filter="pending">
+
+            Pending
+
+        </button>
+
+
+        <button
+        class="filter-btn"
+        data-filter="sold">
+
+            Sold
+
+        </button>
+
+    </div>
+
+
+    <span>
+
+        {{ properties|length }}
+        properties
+
+    </span>
+
+</div>
+
+
+
+<!-- PROPERTY TABLE -->
+
+<div class="list-table">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+    <th>PROPERTY</th>
+
+    <th>LOCATION</th>
+
+    <th>PRICE</th>
+
+    <th>BANK</th>
+
+    <th>STATUS</th>
+
+    <th>ACTIONS</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="propertyTable">
+
+
+{% for property in properties %}
+
+
+<tr
+class="property-row"
+
+data-status="
+{{ property[4]|lower }}
+">
+
+
+<!-- PROPERTY -->
+
+<td>
+
+
+<div class="property-detail">
+
+
+{% if property[6] %}
+
+
+{% set first_image =
+property[6].split(',')[0] %}
+
+
+<img
+
+src="{{ url_for(
+'static',
+filename=
+'uploads/' ~ first_image|trim
+) }}"
+
+alt="{{ property[1] }}">
+
+
+{% else %}
+
+
+<div class="table-avatar">
+
+<i class="fa-regular fa-building">
+
+</i>
+
+</div>
+
+
+{% endif %}
+
+
+
+<div>
+
+
+<strong>
+
+{{ property[1] }}
+
+</strong>
+
+
+<small>
+
+Property ID:
+
+{{ property[0] }}
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+</td>
+
+
+
+<!-- LOCATION -->
+
+<td>
+
+
+<i class="
+fa-solid
+fa-location-dot
+location-icon">
+
+</i>
+
+
+{{ property[2] }}
+
+
+</td>
+
+
+
+<!-- PRICE -->
+
+<td class="price">
+
+
+₹ {{ "{:,}".format(
+property[3]
+) }}
+
+
+</td>
+
+
+
+<!-- BANK -->
+
+<td>
+
+
+{{ property[5] }}
+
+
+</td>
+
+
+
+<!-- STATUS -->
+
+<td>
+
+
+{% if property[4] == "Sold" %}
+
+
+<span class="
+table-status
+status-sold">
+
+Sold
+
+</span>
+
+
+{% elif property[4] == "Pending" %}
+
+
+<span class="
+table-status
+status-pending">
+
+Pending
+
+</span>
+
+
+{% else %}
+
+
+<span class="
+table-status
+status-available">
+
+Available
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+
+<!-- ACTIONS -->
+
+<td>
+
+
+<div class="action-icons">
+
+
+<!-- VIEW POPUP BUTTON -->
+
+
+<button
+
+type="button"
+
+class="property-view-btn"
+
+data-bs-toggle="modal"
+
+data-bs-target="
+#propertyModal{{ property[0] }}">
+
+
+<i class="fa-regular fa-eye">
+
+</i>
+
+
+</button>
+
+
+
+<!-- DELETE -->
+
+
+<a
+
+href="
+/admin/delete_property/
+{{ property[0] }}"
+
+onclick="
+
+return confirm(
+
+'Are you sure you want to delete this property?'
+
+)">
+
+
+<i class="
+fa-regular
+fa-trash-can">
+
+</i>
+
+
+</a>
+
+
+</div>
+
+
+</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+<!-- =================================
+
+PROPERTY IMAGE POPUPS
+
+================================= -->
+
+
+{% for property in properties %}
+
+
+<div
+
+class="modal fade"
+
+id="
+propertyModal{{ property[0] }}"
+
+tabindex="-1"
+
+aria-hidden="true">
+
+
+<div class="
+modal-dialog
+modal-dialog-centered">
+
+
+<div class="
+modal-content
+property-modal">
+
+
+
+<!-- POPUP HEADER -->
+
+
+<div class="modal-header">
+
+
+<div>
+
+
+<h5>
+
+{{ property[1] }}
+
+</h5>
+
+
+<p>
+
+
+<i class="
+fa-solid
+fa-location-dot">
+
+</i>
+
+
+{{ property[2] }}
+
+
+</p>
+
+
+</div>
+
+
+
+<button
+
+type="button"
+
+class="btn-close"
+
+data-bs-dismiss="modal">
+
+</button>
+
+
+</div>
+
+
+
+<!-- POPUP IMAGES -->
+
+
+<div class="
+modal-body
+p-0">
+
+
+{% if property[6] %}
+
+
+{% set images =
+
+property[6].split(',')
+
+%}
+
+
+
+<div
+
+id="
+propertySlider{{ property[0] }}"
+
+class="carousel slide"
+
+data-bs-interval="false">
+
+
+
+<!-- IMAGES -->
+
+
+<div class="
+carousel-inner">
+
+
+{% for image in images %}
+
+
+<div class="
+
+carousel-item
+
+{% if loop.first %}
+
+active
+
+{% endif %}
+
+">
+
+
+<img
+
+src="{{ url_for(
+
+'static',
+
+filename=
+
+'uploads/' ~ image|trim
+
+) }}"
+
+class="
+property-slide-image"
+
+alt="
+{{ property[1] }}">
+
+
+
+<!-- IMAGE NUMBER -->
+
+
+<div class="
+image-number">
+
+
+{{ loop.index }}
+
+/
+
+{{ images|length }}
+
+
+</div>
+
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+
+<!-- ARROWS -->
+
+
+{% if images|length > 1 %}
+
+
+
+<!-- LEFT -->
+
+
+<button
+
+class="
+carousel-control-prev"
+
+type="button"
+
+data-bs-target="
+#propertySlider{{ property[0] }}"
+
+data-bs-slide="prev">
+
+
+<span class="
+slider-arrow">
+
+
+<i class="
+fa-solid
+fa-chevron-left">
+
+</i>
+
+
+</span>
+
+
+</button>
+
+
+
+<!-- RIGHT -->
+
+
+<button
+
+class="
+carousel-control-next"
+
+type="button"
+
+data-bs-target="
+#propertySlider{{ property[0] }}"
+
+data-bs-slide="next">
+
+
+<span class="
+slider-arrow">
+
+
+<i class="
+fa-solid
+fa-chevron-right">
+
+</i>
+
+
+</span>
+
+
+</button>
+
+
+{% endif %}
+
+
+</div>
+
+
+
+{% else %}
+
+
+
+<div class="
+no-property-image">
+
+
+<i class="
+fa-regular
+fa-image">
+
+</i>
+
+
+<h5>
+
+No property images
+
+</h5>
+
+
+</div>
+
+
+{% endif %}
+
+
+</div>
+
+
+
+<!-- PROPERTY INFORMATION -->
+
+
+<div class="
+property-popup-details">
+
+
+<div>
+
+
+<small>
+
+PROPERTY PRICE
+
+</small>
+
+
+<strong>
+
+
+₹ {{ "{:,}".format(
+
+property[3]
+
+) }}
+
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+
+<small>
+
+BANK
+
+</small>
+
+
+<strong>
+
+
+{{ property[5] }}
+
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+
+<small>
+
+STATUS
+
+</small>
+
+
+
+{% if property[4] == "Sold" %}
+
+
+<strong class="
+popup-sold">
+
+Sold
+
+</strong>
+
+
+{% elif property[4] == "Pending" %}
+
+
+<strong class="
+popup-pending">
+
+Pending
+
+</strong>
+
+
+{% else %}
+
+
+<strong class="
+popup-available">
+
+Available
+
+</strong>
+
+
+{% endif %}
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+{% endfor %}
+
+
+
+
+<style>
+
+
+/* ======================
+
+TOP FILTER
+
+====================== */
+
+
+.content-heading{
+
+display:flex;
+
+align-items:center;
+
+justify-content:
+space-between;
+
+margin-bottom:23px;
+
+color:#737b8d;
+
+}
+
+
+.property-filters{
+
+display:flex;
+
+gap:10px;
+
+}
+
+
+.filter-btn{
+
+padding:9px 20px;
+
+background:#ebe9e3;
+
+color:#667086;
+
+border:none;
+
+border-radius:24px;
+
+font-weight:600;
+
+}
+
+
+.filter-btn:hover{
+
+background:#dfdcd3;
+
+}
+
+
+.filter-btn.active{
+
+background:#d1aa39;
+
+color:#10182c;
+
+}
+
+
+
+
+/* ======================
+
+PROPERTY TABLE
+
+====================== */
+
+
+.list-table{
+
+background:white;
+
+border:
+
+1px solid #dededb;
+
+border-radius:19px;
+
+overflow-x:auto;
+
+}
+
+
+.list-table table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+.list-table th{
+
+padding:18px 27px;
+
+background:#fafaf8;
+
+color:#657085;
+
+font-size:14px;
+
+font-weight:600;
+
+white-space:nowrap;
+
+}
+
+
+.list-table td{
+
+padding:18px 27px;
+
+border-top:
+
+1px solid #e6e5e2;
+
+color:#697286;
+
+white-space:nowrap;
+
+}
+
+
+
+
+/* PROPERTY */
+
+
+.property-detail{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+
+.property-detail img{
+
+width:76px;
+
+height:52px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+}
+
+
+.property-detail strong{
+
+display:block;
+
+color:#10182c;
+
+font-size:16px;
+
+}
+
+
+.property-detail small{
+
+display:block;
+
+margin-top:5px;
+
+color:#788092;
+
+}
+
+
+.table-avatar{
+
+width:76px;
+
+height:52px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#f4edda;
+
+color:#d1aa39;
+
+border-radius:12px;
+
+}
+
+
+.location-icon{
+
+margin-right:7px;
+
+}
+
+
+.price{
+
+color:#10182c !important;
+
+font-size:16px;
+
+font-weight:bold;
+
+}
+
+
+
+
+/* STATUS */
+
+
+.table-status{
+
+padding:7px 14px;
+
+border-radius:20px;
+
+font-size:13px;
+
+font-weight:600;
+
+}
+
+
+.status-available{
+
+background:#e5f8ef;
+
+color:#009b70;
+
+}
+
+
+.status-pending{
+
+background:#fff4d8;
+
+color:#d58b00;
+
+}
+
+
+.status-sold{
+
+background:#eef2f8;
+
+color:#587394;
+
+}
+
+
+
+
+/* ======================
+
+ACTION BUTTONS
+
+====================== */
+
+
+.action-icons{
+
+display:flex;
+
+align-items:center;
+
+gap:22px;
+
+}
+
+
+.action-icons a,
+
+.property-view-btn{
+
+padding:0;
+
+background:none;
+
+border:none;
+
+color:#70798a;
+
+font-size:17px;
+
+cursor:pointer;
+
+text-decoration:none;
+
+}
+
+
+.action-icons a:hover,
+
+.property-view-btn:hover{
+
+color:#d1aa39;
+
+}
+
+
+
+
+/* ======================
+
+PROPERTY POPUP
+
+====================== */
+
+
+.property-modal{
+
+overflow:hidden;
+
+background:white;
+
+border:none;
+
+border-radius:20px;
+
+box-shadow:
+
+0 25px 70px
+
+rgba(0,0,0,.35);
+
+}
+
+
+.property-modal
+
+.modal-header{
+
+padding:18px 22px;
+
+border:none;
+
+}
+
+
+.property-modal
+
+.modal-header h5{
+
+margin:0;
+
+color:#10182c;
+
+font-size:20px;
+
+font-weight:bold;
+
+}
+
+
+.property-modal
+
+.modal-header p{
+
+margin:5px 0 0;
+
+color:#788092;
+
+font-size:13px;
+
+}
+
+
+
+
+/* IMAGE */
+
+
+.property-slide-image{
+
+width:100%;
+
+height:380px;
+
+display:block;
+
+object-fit:contain;
+
+background:#10182c;
+
+}
+
+
+
+
+/* IMAGE NUMBER */
+
+
+.image-number{
+
+position:absolute;
+
+right:17px;
+
+bottom:15px;
+
+padding:6px 13px;
+
+background:
+
+rgba(0,0,0,.7);
+
+color:white;
+
+border-radius:20px;
+
+font-size:12px;
+
+}
+
+
+
+
+/* LEFT RIGHT BUTTON */
+
+
+.slider-arrow{
+
+width:43px;
+
+height:43px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:
+
+rgba(16,24,44,.85);
+
+color:white;
+
+border-radius:50%;
+
+font-size:17px;
+
+}
+
+
+.carousel-control-prev,
+
+.carousel-control-next{
+
+width:17%;
+
+opacity:1;
+
+}
+
+
+
+
+/* PROPERTY INFORMATION */
+
+
+.property-popup-details{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(3,1fr);
+
+padding:18px;
+
+background:white;
+
+}
+
+
+.property-popup-details div{
+
+padding:4px 16px;
+
+border-right:
+
+1px solid #dededb;
+
+}
+
+
+.property-popup-details
+
+div:last-child{
+
+border:none;
+
+}
+
+
+.property-popup-details
+
+small{
+
+display:block;
+
+margin-bottom:5px;
+
+color:#788092;
+
+font-size:11px;
+
+}
+
+
+.property-popup-details
+
+strong{
+
+display:block;
+
+color:#10182c;
+
+font-size:14px;
+
+}
+
+
+.popup-available{
+
+color:#00a879 !important;
+
+}
+
+
+.popup-pending{
+
+color:#d58b00 !important;
+
+}
+
+
+.popup-sold{
+
+color:#dc3545 !important;
+
+}
+
+
+
+
+/* NO IMAGE */
+
+
+.no-property-image{
+
+padding:80px;
+
+text-align:center;
+
+color:#788092;
+
+}
+
+
+.no-property-image i{
+
+font-size:50px;
+
+color:#d1aa39;
+
+}
+
+
+.no-property-image h5{
+
+margin-top:15px;
+
+}
+
+
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+
+.content-heading{
+
+align-items:flex-start;
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+
+.property-filters{
+
+flex-wrap:wrap;
+
+}
+
+
+.property-slide-image{
+
+height:300px;
+
+}
+
+
+.property-popup-details{
+
+grid-template-columns:1fr;
+
+gap:15px;
+
+}
+
+
+.property-popup-details div{
+
+border:none;
+
+}
+
+
+}
+
+
+</style>
+
+
+
+
+<script>
+
+
+/* =================
+
+PROPERTY FILTER
+
+================= */
+
+
+const filterButtons =
+
+document.querySelectorAll(
+
+".filter-btn"
+
+);
+
+
+const propertyRows =
+
+document.querySelectorAll(
+
+".property-row"
+
+);
+
+
+
+filterButtons.forEach(
+
+function(button){
+
+
+button.addEventListener(
+
+"click",
+
+function(){
+
+
+
+filterButtons.forEach(
+
+function(item){
+
+
+item.classList.remove(
+
+"active"
+
+);
+
+
+});
+
+
+button.classList.add(
+
+"active"
+
+);
+
+
+
+const selected =
+
+button.dataset.filter;
+
+
+
+propertyRows.forEach(
+
+function(row){
+
+
+
+const status =
+
+row.dataset.status
+
+.trim();
+
+
+
+if(
+
+selected === "all"
+
+||
+
+status === selected
+
+){
+
+
+row.style.display = "";
+
+
+}
+
+
+else{
+
+
+row.style.display =
+
+"none";
+
+
+}
+
+
+});
+
+
+});
+
+
+});
+
+
+
+
+/* =================
+
+PROPERTY SEARCH
+
+================= */
+
+
+const propertySearch =
+
+document.querySelector(
+
+".search-box input"
+
+);
+
+
+if(propertySearch){
+
+
+propertySearch
+
+.addEventListener(
+
+"keyup",
+
+function(){
+
+
+
+const value =
+
+this.value
+
+.toLowerCase()
+
+.trim();
+
+
+
+propertyRows.forEach(
+
+function(row){
+
+
+
+const text =
+
+row.innerText
+
+.toLowerCase();
+
+
+
+if(
+
+text.includes(
+
+value
+
+)
+
+){
+
+
+row.style.display = "";
+}
+else{
+row.style.display =
+"none";
+}
+});
+});
+}
+
+</script>
+{% endblock %}

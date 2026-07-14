@@ -1,0 +1,65 @@
+{% extends 'bank/bank_base.html' %}
+
+{% block content %}
+
+
+   <div class="profile-hero">
+
+    <div class="profile-banner"></div>
+
+    <div class="profile-content">
+
+        <img src="{{ url_for('static', filename='uploads/' ~ bank.logo) }}"
+             class="profile-avatar">
+
+        <div class="profile-info">
+
+            <h1>{{ bank.bankname }}</h1>
+
+            <span class="verified-badge">
+                <i class="fa fa-circle-check"></i>
+                Verified Bank
+            </span>
+
+            <div class="info-grid">
+
+                <div class="info-card">
+                    <i class="fa fa-building-columns"></i>
+                    <h5>Branch</h5>
+                    <p>{{ bank.branch }}</p>
+                </div>
+
+                <div class="info-card">
+                    <i class="fa fa-code"></i>
+                    <h5>IFSC</h5>
+                    <p>{{ bank.ifsc }}</p>
+                </div>
+
+                <div class="info-card">
+                    <i class="fa fa-envelope"></i>
+                    <h5>Email</h5>
+                    <p>{{ bank.email }}</p>
+                </div>
+
+                <div class="info-card">
+                    <i class="fa fa-location-dot"></i>
+                    <h5>Address</h5>
+                    <p>{{ bank.address }}</p>
+                </div>
+
+            </div>
+
+            <a href="/bank/edit_profile/{{ bank.id }}"
+               class="edit-profile-btn">
+               <i class="fa fa-user-pen"></i>
+               Edit Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

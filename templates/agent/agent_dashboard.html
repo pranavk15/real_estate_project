@@ -1,0 +1,451 @@
+{% extends 'agent/baseagent.html' %}
+
+{% block page_title %}
+Agent Dashboard
+{% endblock %}
+
+{% block page_subtitle %}
+
+Welcome back, {{ agent.fullname }}. Here's your performance summary.
+
+{% endblock %}
+
+{% block styles %}
+
+<style>
+
+.stat-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:28px;
+}
+
+.stat-card{
+background:white;
+border:1px solid #ddd;
+border-radius:20px;
+padding:23px;
+}
+
+.stat-dot{
+width:10px;
+height:10px;
+border-radius:50%;
+margin-bottom:15px;
+}
+
+.green-dot{background:#10b981}
+.blue-dot{background:#3b82f6}
+.gold-dot{background:#cba43d}
+.orange-dot{background:#f59e0b}
+
+.stat-title{
+font-size:15px;
+color:#657083;
+text-transform:uppercase;
+}
+
+.stat-number{
+font-size:38px;
+font-weight:700;
+line-height:43px;
+}
+
+.stat-change{
+font-size:14px;
+color:#10b981;
+}
+
+.dashboard-row{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.chart-card{
+padding:28px;
+height:380px;
+}
+
+.card-heading{
+font-size:20px;
+font-weight:700;
+}
+
+.card-description{
+font-size:14px;
+color:#788296;
+}
+
+.chart-container{
+height:270px;
+}
+
+.notification-alert{
+border:0;
+border-left:5px solid #10b981;
+border-radius:15px;
+}
+
+@media(max-width:1100px){
+
+.stat-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.dashboard-row{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:550px){
+
+.stat-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+{% for offer in accepted_notifications %}
+
+<div class="alert alert-success notification-alert">
+
+<h5>
+
+🎉 Offer Accepted
+
+</h5>
+
+Your offer for
+
+<strong>
+
+{{ offer.property_name }}
+
+</strong>
+
+was accepted.
+
+<a
+href="/payment/{{ offer.id }}"
+class="green-btn ms-3">
+
+Proceed to Payment
+
+</a>
+
+</div>
+
+{% endfor %}
+
+<div class="stat-grid">
+
+<div class="stat-card">
+
+<div class="stat-dot green-dot"></div>
+
+<div class="stat-title">
+
+Available Properties
+
+</div>
+
+<div class="stat-number">
+
+{{ total_properties }}
+
+</div>
+
+<div class="stat-change">
+
+Available now
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-dot blue-dot"></div>
+
+<div class="stat-title">
+
+My Offers
+
+</div>
+
+<div class="stat-number">
+
+{{ total_offers }}
+
+</div>
+
+<div class="stat-change">
+
+Total submitted
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-dot gold-dot"></div>
+
+<div class="stat-title">
+
+Accepted Offers
+
+</div>
+
+<div class="stat-number">
+
+{{ accepted_offers }}
+
+</div>
+
+<div class="stat-change">
+
+Approved offers
+
+</div>
+
+</div>
+
+<div class="stat-card">
+
+<div class="stat-dot orange-dot"></div>
+
+<div class="stat-title">
+
+Rejected Offers
+
+</div>
+
+<div class="stat-number">
+
+{{ rejected_offers }}
+
+</div>
+
+<div class="stat-change">
+
+Offer history
+
+</div>
+
+</div>
+
+</div>
+
+<div class="dashboard-row">
+
+<div class="white-card chart-card">
+
+<h3 class="card-heading">
+
+Offer Performance
+
+</h3>
+
+<p class="card-description">
+
+Your property activity summary
+
+</p>
+
+<div class="chart-container">
+
+<canvas id="performanceChart"></canvas>
+
+</div>
+
+</div>
+
+<div class="white-card chart-card">
+
+<h3 class="card-heading">
+
+Offer Status
+
+</h3>
+
+<p class="card-description">
+
+Current offer portfolio
+
+</p>
+
+<div class="chart-container">
+
+<canvas id="statusChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+new Chart(
+
+document.getElementById("performanceChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:[
+
+"Available",
+
+"Offers",
+
+"Accepted",
+
+"Rejected"
+
+],
+
+datasets:[{
+
+data:[
+
+{{ total_properties }},
+
+{{ total_offers }},
+
+{{ accepted_offers }},
+
+{{ rejected_offers }}
+
+],
+
+borderColor:"#10b981",
+
+backgroundColor:"rgba(16,185,129,.1)",
+
+fill:true,
+
+tension:.4,
+
+pointRadius:5
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+plugins:{
+
+legend:{
+
+display:false
+
+}
+
+}
+
+}
+
+}
+
+);
+
+new Chart(
+
+document.getElementById("statusChart"),
+
+{
+
+type:"doughnut",
+
+data:{
+
+labels:[
+
+"Accepted",
+
+"Pending",
+
+"Rejected"
+
+],
+
+datasets:[{
+
+data:[
+
+{{ accepted_offers }},
+
+{{ total_offers - accepted_offers - rejected_offers }},
+
+{{ rejected_offers }}
+
+],
+
+backgroundColor:[
+
+"#10b981",
+
+"#f59e0b",
+
+"#cbd5e1"
+
+],
+
+borderWidth:5,
+
+borderColor:"white"
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+cutout:"62%",
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+}
+
+}
+
+);
+
+</script>
+
+{% endblock %}

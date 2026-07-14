@@ -1,0 +1,289 @@
+{% extends 'bank/bank_base.html' %}
+
+{% block content %}
+
+
+
+
+<div class="properties-header">
+
+<div>
+
+    <h1 class="page-title">
+        My Properties
+    </h1>
+
+    <p class="page-subtitle">
+        Manage all your real estate assets
+    </p>
+
+</div>
+
+<div style="display:flex;align-items:center;gap:20px;">
+
+    <div class="search-box">
+
+        <i class="fa fa-search"></i>
+
+        <input
+            type="text"
+            id="propertySearch"
+            placeholder="Search properties...">
+
+    </div>
+
+    <button
+        class="btn-add-property"
+        data-bs-toggle="modal"
+        data-bs-target="#propertyModal">
+
+        <i class="fa fa-plus"></i>
+        Add Property
+
+    </button>
+
+</div>
+
+</div>
+
+<div class="property-grid" id="propertyContainer">
+
+{% for property in properties %}
+
+<div class="property-card searchable-card">
+
+    {% if property.image %}
+        {% set images = property.image.split(',') %}
+
+        <img
+        src="{{ url_for('static', filename='uploads/' ~ images[0].strip()) }}"
+        class="property-image">
+
+    {% else %}
+
+        <img
+        src="{{ url_for('static', filename='images/noimage.jpg') }}"
+        class="property-image">
+
+    {% endif %}
+
+    <div class="property-content">
+
+        <div class="property-top">
+
+            <h2 class="property-title">
+                {{ property.property_name }}
+            </h2>
+
+        {% if property.status=="Available" %}
+<span class="badge bg-success">
+Available
+</span>
+
+{% elif property.status=="Pending" %}
+<span class="badge bg-warning">
+Pending Payment
+</span>
+
+{% elif property.status=="Sold" %}
+<span class="badge bg-danger">
+Sold
+</span>
+{% endif %}
+
+        </div>
+
+
+<p class="property-location">
+
+    <i class="fa fa-location-dot"></i>
+
+    <a href="{{ property.map_link }}"
+       target="_blank"
+       style="color:#dfe6e9;text-decoration:none;">
+
+        {{ property.location }}
+
+    </a>
+
+</p>
+
+
+        <div class="price-box">
+
+            ₹ {{ "{:,}".format(property.minimum_price) }}
+
+        </div>
+
+        <div class="property-buttons">
+
+            <a href="/bank/view_offers/{{ property.id }}"
+               class="btn-view">
+
+                <i class="fa fa-gavel"></i>
+                View Offers
+
+            </a>
+
+            <a href="/bank/update_property/{{ property.id }}"
+               class="btn-update">
+
+                <i class="fa fa-pen"></i>
+                Update
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+</div>
+
+<div class="modal fade" id="propertyModal">
+
+<div class="modal-dialog modal-lg">
+
+    <div class="modal-content custom-modal">
+
+        <div class="modal-header border-0">
+
+            <h3>Add New Property</h3>
+
+            <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal">
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <form
+            action="/bank/add_property/{{ bank_id }}"
+            method="POST"
+            enctype="multipart/form-data">
+
+                <input
+                type="text"
+                name="property_name"
+                class="form-control custom-input mb-3"
+                placeholder="Property Name"
+                required>
+
+                <input
+                type="text"
+                name="location"
+                class="form-control custom-input mb-3"
+                placeholder="Location"
+                required>
+
+                <label class="form-label text-white">Google Maps Location</label>
+
+<input
+type="url"
+name="map_link"
+class="form-control custom-input mb-3"
+placeholder="https://maps.google.com/..."
+required>
+                <input
+                type="number"
+                name="minimum_price"
+                class="form-control custom-input mb-3"
+                place*holder="Minimum Price"
+                required>
+
+<input
+    type="file"
+    id="images"
+    name="images"
+    multiple
+    accept="image/*">
+
+<div id="selectedFiles"></div>
+
+<script>
+const input = document.getElementById("images");
+const dt = new DataTransfer();
+
+input.addEventListener("change", function () {
+
+    for (const file of this.files) {
+
+        if (dt.files.length >= 4) {
+            alert("Maximum 4 images allowed.");
+            break;
+        }
+
+        dt.items.add(file);
+    }
+
+    input.files = dt.files;
+
+    let html = "";
+
+    for (let i = 0; i < dt.files.length; i++) {
+        html += "<p>📷 " + dt.files[i].name + "</p>";
+    }
+
+    document.getElementById("selectedFiles").innerHTML = html;
+});
+</script>
+
+                <button class="btn-save w-100">
+
+                    Add Property
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<style>
+
+
+</style>
+<script>
+
+const propertySearch=document.getElementById("propertySearch");
+
+propertySearch.addEventListener("keyup",function(){
+
+const value=this.value.toLowerCase();
+
+const cards=document.querySelectorAll(".searchable-card");
+
+cards.forEach(card=>{
+
+const text=card.innerText.toLowerCase();
+
+if(text.includes(value)){
+
+card.style.display="block";
+
+}else{
+
+card.style.display="none";
+
+}
+
+});
+
+});
+
+</script>
+
+{% endblock %}

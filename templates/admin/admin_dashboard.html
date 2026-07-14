@@ -1,0 +1,589 @@
+{% extends 'admin/admin_base.html' %}
+
+
+{% block page_title %}
+
+Dashboard
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- STAT CARDS -->
+
+<div class="row g-4">
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<p class="stat-label">
+
+Total Agents
+
+</p>
+
+<h2 class="stat-number">
+
+{{ total_agents }}
+
+</h2>
+
+<div class="stat-info">
+
+<i class="fa-solid fa-arrow-trend-up"></i>
+
++ Active
+
+<span>
+
+registered agents
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<p class="stat-label">
+
+Total Banks
+
+</p>
+
+<h2 class="stat-number">
+
+{{ total_banks }}
+
+</h2>
+
+<div class="stat-info">
+
+<i class="fa-solid fa-arrow-trend-up"></i>
+
++ Connected
+
+<span>
+
+bank partners
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<p class="stat-label">
+
+Total Properties
+
+</p>
+
+<h2 class="stat-number">
+
+{{ total_properties }}
+
+</h2>
+
+<div class="stat-info">
+
+<i class="fa-solid fa-arrow-trend-up"></i>
+
++ Listings
+
+<span>
+
+all properties
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<p class="stat-label">
+
+Properties Sold
+
+</p>
+
+<h2 class="stat-number">
+
+{{ sold_properties }}
+
+</h2>
+
+<div class="stat-info">
+
+<i class="fa-solid fa-arrow-trend-up"></i>
+
++ Sold
+
+<span>
+
+completed sales
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- CHARTS -->
+
+<div class="row g-4 mt-1">
+
+
+<div class="col-lg-8">
+
+<div class="chart-card">
+
+<div>
+
+<h3 class="chart-title">
+
+System Overview
+
+</h3>
+
+<p class="chart-subtitle">
+
+ERP property statistics
+
+</p>
+
+</div>
+
+
+<div class="chart-container">
+
+<canvas id="mainChart">
+
+</canvas>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-lg-4">
+
+<div class="chart-card">
+
+<h3 class="chart-title">
+
+Property Status
+
+</h3>
+
+<p class="chart-subtitle">
+
+Available and sold listings
+
+</p>
+
+
+<div class="chart-container">
+
+<canvas id="statusChart">
+
+</canvas>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- RECENT PROPERTIES -->
+
+<div class="table-card">
+
+
+<div class="table-header">
+
+<h3 class="table-title">
+
+Recent Listings
+
+</h3>
+
+
+<a href="/admin/all_properties"
+
+class="view-all">
+
+View all
+
+<i class="fa-solid fa-arrow-up-right-from-square">
+
+</i>
+
+</a>
+
+</div>
+
+
+<div class="table-responsive">
+
+<table class="table">
+
+
+<tbody>
+
+
+{% for property in recent_properties %}
+
+
+<tr>
+
+
+<td>
+
+<div class="d-flex align-items-center gap-3">
+
+
+<div class="property-icon">
+
+<i class="fa-regular fa-building">
+
+</i>
+
+</div>
+
+
+<div>
+
+
+<div class="property-name">
+
+{{ property.property_name }}
+
+</div>
+
+
+<div class="location">
+
+<i class="fa-solid fa-location-dot">
+
+</i>
+
+{{ property.location }}
+
+</div>
+
+
+</div>
+
+
+</div>
+
+</td>
+
+
+
+<td>
+
+{{ property.bankname }}
+
+</td>
+
+
+
+<td>
+
+
+{% if property.status == "Sold" %}
+
+
+<span class="status sold">
+
+Sold
+
+</span>
+
+
+{% else %}
+
+
+<span class="status available">
+
+Available
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+
+<td>
+
+<strong>
+
+₹ {{ "{:,}".format(
+property.minimum_price
+) }}
+
+</strong>
+
+</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+</table>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* MAIN BAR CHART */
+
+
+new Chart(
+
+document.getElementById(
+
+"mainChart"
+
+),
+
+{
+
+type:"bar",
+
+
+data:{
+
+labels:[
+
+"Agents",
+
+"Banks",
+
+"Properties",
+
+"Sold"
+
+],
+
+
+datasets:[{
+
+data:[
+
+{{ total_agents }},
+
+{{ total_banks }},
+
+{{ total_properties }},
+
+{{ sold_properties }}
+
+],
+
+
+backgroundColor:
+
+"#11192d",
+
+
+borderRadius:7,
+
+
+barThickness:35
+
+}]
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+plugins:{
+
+legend:{
+
+display:false
+
+}
+
+},
+
+
+scales:{
+
+x:{
+
+grid:{
+
+display:false
+
+}
+
+},
+
+
+y:{
+
+beginAtZero:true,
+
+
+grid:{
+
+color:"#eeeeea"
+
+}
+
+}
+
+}
+
+}
+
+});
+
+
+/* DOUGHNUT */
+
+
+new Chart(
+
+document.getElementById(
+
+"statusChart"
+
+),
+
+{
+
+type:"doughnut",
+
+
+data:{
+
+labels:[
+
+"Available",
+
+"Sold"
+
+],
+
+
+datasets:[{
+
+data:[
+
+{{ total_properties-sold_properties }},
+
+{{ sold_properties }}
+
+],
+
+
+backgroundColor:[
+
+"#11192d",
+
+"#d1aa39"
+
+],
+
+
+borderWidth:0
+
+}]
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+cutout:"70%",
+
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+}
+
+});
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<h1>Choose Payment Method</h1>
+
+<form method="POST"
+      action="/process_payment/{{ offer_id }}">
+
+    <select name="payment_method">
+
+        <option>UPI</option>
+        <option>Net Banking</option>
+        <option>Credit Card</option>
+        <option>Debit Card</option>
+
+    </select>
+
+    <button type="submit">
+        Pay Now
+    </button>
+
+</form>

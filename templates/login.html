@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Luxury ERP Login</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+body{
+background:#040b1d;
+font-family:Arial;
+overflow-x:hidden;
+}
+
+.login-section{
+padding:80px 0;
+min-height:100vh;
+display:flex;
+align-items:center;
+}
+
+.login-card{
+background:white;
+padding:40px;
+border-radius:25px;
+box-shadow:0 10px 40px rgba(0,0,0,.3);
+transition:.4s;
+height:100%;
+}
+
+.login-card:hover{
+transform:translateY(-10px);
+}
+
+.login-icon{
+font-size:60px;
+color:#c8ab67;
+margin-bottom:25px;
+}
+
+.login-title{
+font-size:70px;
+color:white;
+margin-bottom:10px;
+font-family:Georgia;
+font-weight:bold;
+}
+
+.login-subtitle{
+color:#bbb;
+margin-bottom:50px;
+font-size:18px;
+}
+
+.form-control{
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.btn-gold{
+background:#c8ab67;
+color:white;
+padding:14px;
+border:none;
+border-radius:40px;
+font-weight:bold;
+width:100%;
+transition:.3s;
+}
+
+.btn-gold:hover{
+background:black;
+}
+
+.register-link{
+margin-top:20px;
+text-align:center;
+}
+
+.register-link button{
+background:none;
+border:none;
+font-weight:bold;
+color:#c8ab67;
+}
+
+.admin-box{
+margin-top:20px;
+background:#f5f5f5;
+padding:12px;
+border-radius:10px;
+font-size:14px;
+}
+
+.modal-content{
+border-radius:25px;
+padding:20px;
+}
+
+.modal-title{
+font-weight:bold;
+}
+
+/* UPLOAD BOX */
+
+.upload-box{
+background:#f7f7f7;
+border:2px dashed #c8ab67;
+border-radius:20px;
+padding:25px;
+text-align:center;
+transition:.3s;
+}
+
+.upload-box:hover{
+background:#faf6ef;
+}
+
+.upload-label{
+width:100%;
+cursor:pointer;
+}
+
+.upload-icon{
+font-size:45px;
+color:#c8ab67;
+margin-bottom:15px;
+}
+
+.upload-btn{
+background:#c8ab67;
+color:white;
+padding:12px 20px;
+border-radius:15px;
+display:inline-block;
+font-weight:bold;
+margin-top:10px;
+}
+
+.preview-image{
+width:100px;
+height:100px;
+object-fit:cover;
+border-radius:50%;
+margin-top:15px;
+border:4px solid #c8ab67;
+}
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+.login-title{
+font-size:45px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container login-section">
+
+<div class="w-100">
+
+<div class="text-center">
+
+<h1 class="login-title">
+Luxury ERP Login
+</h1>
+
+<p class="login-subtitle">
+Select your role to continue
+</p>
+
+</div>
+
+<div class="row g-4">
+
+<!-- ADMIN -->
+
+<div class="col-lg-4">
+
+<div class="login-card text-center">
+
+<i class="fa fa-user-shield login-icon"></i>
+
+<h2>Admin Login</h2>
+
+<p>Administrator Access</p>
+
+<form action="/admin_login" method="POST">
+
+<input type="text"
+class="form-control"
+name="username"
+placeholder="Username"
+required>
+
+<input type="password"
+class="form-control"
+name="password"
+placeholder="Password"
+required>
+
+<button class="btn-gold">
+Login
+</button>
+
+</form>
+
+<div class="admin-box">
+
+<b>Username:</b> admin <br>
+<b>Password:</b> super
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BANK LOGIN -->
+
+<div class="col-lg-4">
+
+<div class="login-card text-center">
+
+<i class="fa fa-building-columns login-icon"></i>
+
+<h2>Bank Login</h2>
+
+<p>Bank & Branch Access</p>
+
+<form action="/bank_login" method="POST">
+
+<input type="email"
+class="form-control"
+name="email"
+placeholder="Bank Email"
+required>
+
+<input type="password"
+class="form-control"
+name="password"
+placeholder="Password"
+required>
+
+<button class="btn-gold">
+Login
+</button>
+
+</form>
+
+<div class="register-link">
+
+<button data-bs-toggle="modal"
+data-bs-target="#bankModal">
+
+New Bank Registration
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- AGENT LOGIN -->
+
+<div class="col-lg-4">
+
+<div class="login-card text-center">
+
+<i class="fa fa-user-tie login-icon"></i>
+
+<h2>Agent Login</h2>
+
+<p>Property Agent Access</p>
+
+<form action="/agent_login" method="POST">
+
+<input type="email"
+class="form-control"
+name="email"
+placeholder="Agent Email"
+required>
+
+<input type="password"
+class="form-control"
+name="password"
+placeholder="Password"
+required>
+
+<button class="btn-gold">
+Login
+</button>
+
+</form>
+
+<div class="register-link">
+
+<button data-bs-toggle="modal"
+data-bs-target="#agentModal">
+
+New Agent Registration
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- AGENT REGISTER -->
+<!-- ========================================= -->
+
+<div class="modal fade" id="agentModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content">
+
+<h2 class="modal-title mb-4">
+Agent Registration
+</h2>
+
+<form action="/agent_register"
+method="POST"
+enctype="multipart/form-data">
+
+<input type="text"
+name="fullname"
+class="form-control"
+placeholder="Full Name"
+required>
+
+<input type="text"
+name="agency"
+class="form-control"
+placeholder="Agency Name"
+required>
+
+<input type="email"
+name="email"
+class="form-control"
+placeholder="Email"
+required>
+
+<input type="text"
+name="phone"
+class="form-control"
+placeholder="Phone Number"
+required>
+
+<select name="gender"
+class="form-control"
+required>
+
+<option value="">
+Select Gender
+</option>
+
+<option value="Male">
+Male
+</option>
+
+<option value="Female">
+Female
+</option>
+
+</select>
+
+<input type="text"
+name="address"
+class="form-control"
+placeholder="Address"
+required>
+
+<input type="password"
+name="password"
+class="form-control"
+placeholder="Password"
+required>
+
+<!-- PROFILE IMAGE -->
+
+<div class="upload-box mt-3 mb-3">
+
+<label for="profile_image"
+class="upload-label">
+
+<i class="fa fa-user upload-icon"></i>
+
+<h5>
+Upload Profile Photo
+</h5>
+
+<p>
+Optional • Dummy Image Will Be Used
+</p>
+
+<div class="upload-btn">
+Choose Photo
+</div>
+
+</label>
+
+<input type="file"
+id="profile_image"
+name="profile_image"
+accept="image/*"
+hidden>
+
+<img id="profile_preview"
+class="preview-image"
+style="display:none;">
+
+</div>
+
+<button class="btn-gold">
+Register Agent
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- BANK REGISTER -->
+<!-- ========================================= -->
+
+<div class="modal fade" id="bankModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content">
+
+<h2 class="modal-title mb-4">
+Bank Registration
+</h2>
+
+<form action="/bank_register"
+method="POST"
+enctype="multipart/form-data">
+
+<input type="text"
+name="bankname"
+class="form-control"
+placeholder="Bank Name"
+required>
+
+<input type="text"
+name="branch"
+class="form-control"
+placeholder="Branch Name"
+required>
+
+<input type="text"
+name="ifsc"
+class="form-control"
+placeholder="IFSC Code"
+required>
+
+<input type="email"
+name="email"
+class="form-control"
+placeholder="Email"
+required>
+
+<input type="text"
+name="address"
+class="form-control"
+placeholder="Bank Address"
+required>
+
+<input type="password"
+name="password"
+class="form-control"
+placeholder="Password"
+required>
+
+<!-- BANK LOGO -->
+
+<div class="upload-box mt-3 mb-3">
+
+<label for="logo"
+class="upload-label">
+
+<i class="fa fa-building-columns upload-icon"></i>
+
+<h5>
+Upload Bank Logo
+</h5>
+
+<p>
+Optional • Dummy Logo Will Be Used
+</p>
+
+<div class="upload-btn">
+Choose Logo
+</div>
+
+</label>
+
+<input type="file"
+id="logo"
+name="logo"
+accept="image/*"
+hidden>
+
+<img id="logo_preview"
+class="preview-image"
+style="display:none;">
+
+</div>
+
+<button class="btn-gold">
+Register Bank
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- SCRIPTS -->
+<!-- ========================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+/* PROFILE IMAGE PREVIEW */
+
+const profileInput =
+document.getElementById('profile_image');
+
+const profilePreview =
+document.getElementById('profile_preview');
+
+profileInput.addEventListener('change', function(){
+
+const file = this.files[0];
+
+if(file){
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+profilePreview.src = e.target.result;
+profilePreview.style.display = 'block';
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+});
+
+/* BANK LOGO PREVIEW */
+
+const logoInput =
+document.getElementById('logo');
+
+const logoPreview =
+document.getElementById('logo_preview');
+
+logoInput.addEventListener('change', function(){
+
+const file = this.files[0];
+
+if(file){
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+logoPreview.src = e.target.result;
+logoPreview.style.display = 'block';
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+    <script>
+    Swal.fire({
+        icon: "{{ 'success' if category == 'success' else 'error' }}",
+        title: "{{ message }}"
+    });
+    </script>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+</body>
+
+</html>
